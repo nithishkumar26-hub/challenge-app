@@ -1,6 +1,14 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { ArrowLeft, Phone, Flame, Snowflake, Handshake, UserPlus, Coffee } from 'lucide-react-native';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withSpring, 
+  withTiming,
+  interpolate,
+  runOnJS
+} from 'react-native-reanimated';
 import { Button } from './ui/Button';
 import { Card, CardContent } from './ui/Card';
 import { ConversationType } from '../types/app';
@@ -108,6 +116,116 @@ const getIconColor = (type: ConversationType) => {
   }
 };
 
+// Animated Card Component
+const AnimatedCard = ({ type, onSelect, index }: { 
+  type: ConversationType; 
+  onSelect: (type: ConversationType) => void;
+  index: number;
+}) => {
+  const scale = useSharedValue(1);
+  const translateY = useSharedValue(0);
+  const opacity = useSharedValue(0);
+  const iconScale = useSharedValue(1);
+  const glowOpacity = useSharedValue(0);
+
+  // Entry animation
+  React.useEffect(() => {
+    const delay = index * 100; // Stagger animation
+    opacity.value = withTiming(1, { duration: 600 });
+    translateY.value = withSpring(0, { 
+      damping: 15,
+      stiffness: 100,
+      mass: 1,
+    });
+  }, []);
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
+    translateY.value = withSpring(-8, { damping: 15, stiffness: 300 });
+    iconScale.value = withSpring(1.1, { damping: 15, stiffness: 300 });
+    glowOpacity.value = withTiming(0.3, { duration: 200 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+    translateY.value = withSpring(0, { damping: 15, stiffness: 300 });
+    iconScale.value = withSpring(1, { damping: 15, stiffness: 300 });
+    glowOpacity.value = withTiming(0, { duration: 300 });
+  };
+
+  const animatedCardStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { scale: scale.value },
+        { translateY: translateY.value }
+      ],
+      opacity: opacity.value,
+    };
+  });
+
+  const animatedIconStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: iconScale.value }],
+    };
+  });
+
+  const animatedGlowStyle = useAnimatedStyle(() => {
+    return {
+      opacity: glowOpacity.value,
+    };
+  });
+
+  return (
+    <View style={styles.gridItem}>
+      <TouchableOpacity
+        onPress={() => onSelect(type)}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        activeOpacity={1}
+        style={styles.cardWrapper}
+      >
+        <Animated.View style={[styles.cardContainer, animatedCardStyle]}>
+          {/* Glow effect */}
+          <Animated.View 
+            style={[
+              styles.glowEffect, 
+              animatedGlowStyle,
+              { 
+                shadowColor: getIconColor(type),
+                backgroundColor: getIconColor(type) + '20',
+              }
+            ]} 
+          />
+          
+          <Card style={styles.card}>
+            <CardContent style={styles.cardContent}>
+              <Animated.View style={[styles.iconContainer, animatedIconStyle]}>
+                {getIcon(type.icon, getIconColor(type))}
+              </Animated.View>
+              
+              <Text style={styles.cardTitle}>{type.title}</Text>
+              <Text style={styles.cardDescription}>
+                {type.description}
+              </Text>
+              
+              <View style={[
+                styles.badge,
+                { 
+                  backgroundColor: type.warmth === 'cold' ? '#3b82f6' : '#f97316'
+                }
+              ]}>
+                <Text style={styles.badgeText}>
+                  {type.warmth.toUpperCase()}
+                </Text>
+              </View>
+            </CardContent>
+          </Card>
+        </Animated.View>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 export default function ConversationTypeSelection({ onSelect, onBack }: ConversationTypeSelectionProps) {
   const screenWidth = Dimensions.get('window').width;
   
@@ -131,37 +249,12 @@ export default function ConversationTypeSelection({ onSelect, onBack }: Conversa
           {/* Grid - 3 columns, 2 rows */}
           <View style={styles.gridContainer}>
             {conversationTypes.map((type, index) => (
-              <View key={type.id} style={styles.gridItem}>
-                <TouchableOpacity
-                  onPress={() => onSelect(type)}
-                  activeOpacity={0.8}
-                  style={styles.cardWrapper}
-                >
-                  <Card style={styles.card}>
-                    <CardContent style={styles.cardContent}>
-                      <View style={styles.iconContainer}>
-                        {getIcon(type.icon, getIconColor(type))}
-                      </View>
-                      
-                      <Text style={styles.cardTitle}>{type.title}</Text>
-                      <Text style={styles.cardDescription}>
-                        {type.description}
-                      </Text>
-                      
-                      <View style={[
-                        styles.badge,
-                        { 
-                          backgroundColor: type.warmth === 'cold' ? '#3b82f6' : '#f97316'
-                        }
-                      ]}>
-                        <Text style={styles.badgeText}>
-                          {type.warmth.toUpperCase()}
-                        </Text>
-                      </View>
-                    </CardContent>
-                  </Card>
-                </TouchableOpacity>
-              </View>
+              <AnimatedCard 
+                key={type.id} 
+                type={type} 
+                onSelect={onSelect} 
+                index={index}
+              />
             ))}
           </View>
         </View>
@@ -228,12 +321,33 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  cardContainer: {
+    position: 'relative',
+    width: '100%',
+    height: 280,
+  },
+  glowEffect: {
+    position: 'absolute',
+    top: -4,
+    left: -4,
+    right: -4,
+    bottom: -4,
+    borderRadius: 20,
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
   card: {
     backgroundColor: '#1e293b',
     borderColor: '#334155',
     borderRadius: 16,
-    height: 280,
+    height: '100%',
     width: '100%',
+    overflow: 'hidden',
   },
   cardContent: {
     padding: 24,
