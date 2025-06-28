@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1e293b',
     borderColor: '#334155',
     borderRadius: 12,
-    height: 180, // Reduced height
+    height: 200, // Reduced height
   },
   cardContent: {
     padding: 16, // Reduced padding
