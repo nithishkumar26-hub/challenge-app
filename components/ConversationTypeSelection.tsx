@@ -62,7 +62,7 @@ const conversationTypes: ConversationType[] = [
 ];
 
 const getIcon = (iconName: string, color: string) => {
-  const iconProps = { size: 32, color };
+  const iconProps = { size: 40, color };
   
   switch (iconName) {
     case 'phone':
@@ -110,9 +110,9 @@ const getIconColor = (type: ConversationType) => {
 
 export default function ConversationTypeSelection({ onSelect, onBack }: ConversationTypeSelectionProps) {
   const screenWidth = Dimensions.get('window').width;
-  // Reduce overall container width and card size
-  const containerWidth = Math.min(screenWidth * 0.85, 900); // Max 85% of screen or 900px
-  const cardWidth = (containerWidth - 60) / 3; // 3 columns with smaller spacing
+  // Adjust container width to match reference image
+  const containerWidth = Math.min(screenWidth * 0.9, 1000);
+  const cardWidth = (containerWidth - 40) / 2; // 2 columns with proper spacing
 
   return (
     <View style={styles.container}>
@@ -121,7 +121,7 @@ export default function ConversationTypeSelection({ onSelect, onBack }: Conversa
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={onBack} style={styles.backButton}>
-              <ArrowLeft color="#ffffff" size={18} />
+              <ArrowLeft color="#ffffff" size={20} />
               <Text style={styles.backText}>Back</Text>
             </TouchableOpacity>
             <Text style={styles.title}>Choose Your Focus</Text>
@@ -131,7 +131,7 @@ export default function ConversationTypeSelection({ onSelect, onBack }: Conversa
             Select the type of conversations you want to excel at
           </Text>
 
-          {/* Grid - 3 columns, 2 rows */}
+          {/* Grid - 2 columns, 3 rows */}
           <View style={styles.grid}>
             {conversationTypes.map((type, index) => (
               <TouchableOpacity
@@ -196,74 +196,74 @@ const styles = StyleSheet.create({
   },
   backText: {
     color: '#ffffff',
-    fontSize: 14,
-    marginLeft: 6,
+    fontSize: 16,
+    marginLeft: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: '#ffffff',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#94a3b8',
-    marginBottom: 32,
-    lineHeight: 20,
+    marginBottom: 40,
+    lineHeight: 22,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 12,
+    gap: 20,
   },
   cardWrapper: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   card: {
     backgroundColor: '#1e293b',
     borderColor: '#334155',
-    borderRadius: 12,
-    height: 200, // Reduced height
+    borderRadius: 16,
+    height: 280, // Increased height to match reference
   },
   cardContent: {
-    padding: 16, // Reduced padding
+    padding: 24, // Increased padding
     alignItems: 'center',
     justifyContent: 'space-between',
     height: '100%',
   },
   iconContainer: {
-    width: 60, // Smaller icon container
-    height: 60,
-    borderRadius: 30,
+    width: 80, // Larger icon container
+    height: 80,
+    borderRadius: 40,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   cardTitle: {
-    fontSize: 15, // Smaller font
+    fontSize: 18, // Larger font
     fontWeight: '600',
     color: '#ffffff',
     textAlign: 'center',
-    marginBottom: 8,
-    lineHeight: 18,
+    marginBottom: 12,
+    lineHeight: 22,
   },
   cardDescription: {
-    fontSize: 12, // Smaller description
+    fontSize: 14, // Larger description
     color: '#94a3b8',
     textAlign: 'center',
-    lineHeight: 16,
-    marginBottom: 12,
+    lineHeight: 20,
+    marginBottom: 16,
     flex: 1,
   },
   badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   badgeText: {
     color: '#ffffff',
-    fontSize: 10, // Smaller badge text
+    fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
