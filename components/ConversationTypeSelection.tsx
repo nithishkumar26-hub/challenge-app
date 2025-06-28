@@ -110,14 +110,11 @@ const getIconColor = (type: ConversationType) => {
 
 export default function ConversationTypeSelection({ onSelect, onBack }: ConversationTypeSelectionProps) {
   const screenWidth = Dimensions.get('window').width;
-  // Adjust container width to match reference image
-  const containerWidth = Math.min(screenWidth * 0.9, 1000);
-  const cardWidth = (containerWidth - 40) / 2; // 2 columns with proper spacing
-
+  
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={[styles.content, { maxWidth: containerWidth, alignSelf: 'center' }]}>
+        <View style={styles.content}>
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={onBack} style={styles.backButton}>
@@ -134,36 +131,37 @@ export default function ConversationTypeSelection({ onSelect, onBack }: Conversa
           {/* Grid - 2 columns, 3 rows */}
           <View style={styles.grid}>
             {conversationTypes.map((type, index) => (
-              <TouchableOpacity
-                key={type.id}
-                onPress={() => onSelect(type)}
-                activeOpacity={0.8}
-                style={[styles.cardWrapper, { width: cardWidth }]}
-              >
-                <Card style={styles.card}>
-                  <CardContent style={styles.cardContent}>
-                    <View style={styles.iconContainer}>
-                      {getIcon(type.icon, getIconColor(type))}
-                    </View>
-                    
-                    <Text style={styles.cardTitle}>{type.title}</Text>
-                    <Text style={styles.cardDescription}>
-                      {type.description}
-                    </Text>
-                    
-                    <View style={[
-                      styles.badge,
-                      { 
-                        backgroundColor: type.warmth === 'cold' ? '#3b82f6' : '#f97316'
-                      }
-                    ]}>
-                      <Text style={styles.badgeText}>
-                        {type.warmth.toUpperCase()}
+              <View key={type.id} style={styles.cardColumn}>
+                <TouchableOpacity
+                  onPress={() => onSelect(type)}
+                  activeOpacity={0.8}
+                  style={styles.cardWrapper}
+                >
+                  <Card style={styles.card}>
+                    <CardContent style={styles.cardContent}>
+                      <View style={styles.iconContainer}>
+                        {getIcon(type.icon, getIconColor(type))}
+                      </View>
+                      
+                      <Text style={styles.cardTitle}>{type.title}</Text>
+                      <Text style={styles.cardDescription}>
+                        {type.description}
                       </Text>
-                    </View>
-                  </CardContent>
-                </Card>
-              </TouchableOpacity>
+                      
+                      <View style={[
+                        styles.badge,
+                        { 
+                          backgroundColor: type.warmth === 'cold' ? '#3b82f6' : '#f97316'
+                        }
+                      ]}>
+                        <Text style={styles.badgeText}>
+                          {type.warmth.toUpperCase()}
+                        </Text>
+                      </View>
+                    </CardContent>
+                  </Card>
+                </TouchableOpacity>
+              </View>
             ))}
           </View>
         </View>
@@ -183,6 +181,8 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     paddingTop: 50,
+    maxWidth: 1000,
+    alignSelf: 'center',
     width: '100%',
   },
   header: {
@@ -214,25 +214,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 20,
+  },
+  cardColumn: {
+    width: '48%', // This ensures exactly 2 columns with proper spacing
+    marginBottom: 20,
   },
   cardWrapper: {
-    marginBottom: 20,
+    width: '100%',
   },
   card: {
     backgroundColor: '#1e293b',
     borderColor: '#334155',
     borderRadius: 16,
-    height: 280, // Increased height to match reference
+    height: 280,
   },
   cardContent: {
-    padding: 24, // Increased padding
+    padding: 24,
     alignItems: 'center',
     justifyContent: 'space-between',
     height: '100%',
   },
   iconContainer: {
-    width: 80, // Larger icon container
+    width: 80,
     height: 80,
     borderRadius: 40,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   cardTitle: {
-    fontSize: 18, // Larger font
+    fontSize: 18,
     fontWeight: '600',
     color: '#ffffff',
     textAlign: 'center',
@@ -249,7 +252,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   cardDescription: {
-    fontSize: 14, // Larger description
+    fontSize: 14,
     color: '#94a3b8',
     textAlign: 'center',
     lineHeight: 20,
