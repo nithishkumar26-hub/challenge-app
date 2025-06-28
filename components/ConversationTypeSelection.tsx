@@ -62,7 +62,7 @@ const conversationTypes: ConversationType[] = [
 ];
 
 const getIcon = (iconName: string, color: string) => {
-  const iconProps = { size: 40, color };
+  const iconProps = { size: 32, color };
   
   switch (iconName) {
     case 'phone':
@@ -110,16 +110,18 @@ const getIconColor = (type: ConversationType) => {
 
 export default function ConversationTypeSelection({ onSelect, onBack }: ConversationTypeSelectionProps) {
   const screenWidth = Dimensions.get('window').width;
-  const cardWidth = (screenWidth - 80) / 3; // 3 columns with proper spacing
+  // Reduce overall container width and card size
+  const containerWidth = Math.min(screenWidth * 0.85, 900); // Max 85% of screen or 900px
+  const cardWidth = (containerWidth - 60) / 3; // 3 columns with smaller spacing
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
+        <View style={[styles.content, { maxWidth: containerWidth, alignSelf: 'center' }]}>
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={onBack} style={styles.backButton}>
-              <ArrowLeft color="#ffffff" size={20} />
+              <ArrowLeft color="#ffffff" size={18} />
               <Text style={styles.backText}>Back</Text>
             </TouchableOpacity>
             <Text style={styles.title}>Choose Your Focus</Text>
@@ -179,88 +181,89 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 24,
-    paddingTop: 60,
+    padding: 20,
+    paddingTop: 50,
+    width: '100%',
   },
   header: {
-    marginBottom: 32,
+    marginBottom: 24,
   },
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   backText: {
     color: '#ffffff',
-    fontSize: 16,
-    marginLeft: 8,
+    fontSize: 14,
+    marginLeft: 6,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#ffffff',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#94a3b8',
-    marginBottom: 48,
-    lineHeight: 24,
+    marginBottom: 32,
+    lineHeight: 20,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    gap: 16,
+    gap: 12,
   },
   cardWrapper: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   card: {
     backgroundColor: '#1e293b',
     borderColor: '#334155',
-    borderRadius: 16,
-    height: 240,
+    borderRadius: 12,
+    height: 180, // Reduced height
   },
   cardContent: {
-    padding: 24,
+    padding: 16, // Reduced padding
     alignItems: 'center',
     justifyContent: 'space-between',
     height: '100%',
   },
   iconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 60, // Smaller icon container
+    height: 60,
+    borderRadius: 30,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 12,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 15, // Smaller font
     fontWeight: '600',
     color: '#ffffff',
     textAlign: 'center',
-    marginBottom: 12,
-    lineHeight: 22,
+    marginBottom: 8,
+    lineHeight: 18,
   },
   cardDescription: {
-    fontSize: 14,
+    fontSize: 12, // Smaller description
     color: '#94a3b8',
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 20,
+    lineHeight: 16,
+    marginBottom: 12,
     flex: 1,
   },
   badge: {
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   badgeText: {
     color: '#ffffff',
-    fontSize: 12,
+    fontSize: 10, // Smaller badge text
     fontWeight: '600',
     letterSpacing: 0.5,
   },
