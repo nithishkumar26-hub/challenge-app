@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { ArrowLeft, Phone, Flame, Snowflake, Handshake, UserPlus, Coffee } from 'lucide-react-native';
 import { Button } from './ui/Button';
 import { Card, CardContent } from './ui/Card';
@@ -62,7 +62,7 @@ const conversationTypes: ConversationType[] = [
 ];
 
 const getIcon = (iconName: string, color: string) => {
-  const iconProps = { size: 32, color };
+  const iconProps = { size: 40, color };
   
   switch (iconName) {
     case 'phone':
@@ -109,6 +109,9 @@ const getIconColor = (type: ConversationType) => {
 };
 
 export default function ConversationTypeSelection({ onSelect, onBack }: ConversationTypeSelectionProps) {
+  const screenWidth = Dimensions.get('window').width;
+  const cardWidth = (screenWidth - 80) / 3; // 3 columns with proper spacing
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -119,21 +122,21 @@ export default function ConversationTypeSelection({ onSelect, onBack }: Conversa
               <ArrowLeft color="#ffffff" size={20} />
               <Text style={styles.backText}>Back</Text>
             </TouchableOpacity>
+            <Text style={styles.title}>Choose Your Focus</Text>
           </View>
           
-          <Text style={styles.title}>Choose Your Focus</Text>
           <Text style={styles.subtitle}>
             Select the type of conversations you want to excel at
           </Text>
 
-          {/* Grid */}
+          {/* Grid - 3 columns, 2 rows */}
           <View style={styles.grid}>
-            {conversationTypes.map((type) => (
+            {conversationTypes.map((type, index) => (
               <TouchableOpacity
                 key={type.id}
                 onPress={() => onSelect(type)}
                 activeOpacity={0.8}
-                style={styles.cardWrapper}
+                style={[styles.cardWrapper, { width: cardWidth }]}
               >
                 <Card style={styles.card}>
                   <CardContent style={styles.cardContent}>
@@ -177,7 +180,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 24,
-    paddingTop: 60, // Extra padding for status bar
+    paddingTop: 60,
   },
   header: {
     marginBottom: 32,
@@ -186,6 +189,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
+    marginBottom: 24,
   },
   backText: {
     color: '#ffffff',
@@ -196,12 +200,11 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginBottom: 12,
   },
   subtitle: {
     fontSize: 16,
     color: '#94a3b8',
-    marginBottom: 40,
+    marginBottom: 48,
     lineHeight: 24,
   },
   grid: {
@@ -211,54 +214,53 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   cardWrapper: {
-    width: '48%', // Two columns with gap
-    marginBottom: 16,
+    marginBottom: 24,
   },
   card: {
     backgroundColor: '#1e293b',
     borderColor: '#334155',
     borderRadius: 16,
-    height: 200,
+    height: 240,
   },
   cardContent: {
-    padding: 20,
+    padding: 24,
     alignItems: 'center',
     justifyContent: 'space-between',
     height: '100%',
   },
   iconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 20,
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: '#ffffff',
     textAlign: 'center',
-    marginBottom: 8,
-    lineHeight: 20,
+    marginBottom: 12,
+    lineHeight: 22,
   },
   cardDescription: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#94a3b8',
     textAlign: 'center',
-    lineHeight: 18,
-    marginBottom: 16,
+    lineHeight: 20,
+    marginBottom: 20,
     flex: 1,
   },
   badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   badgeText: {
     color: '#ffffff',
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.5,
   },
