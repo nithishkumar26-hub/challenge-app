@@ -128,10 +128,10 @@ export default function ConversationTypeSelection({ onSelect, onBack }: Conversa
             Select the type of conversations you want to excel at
           </Text>
 
-          {/* Grid - 2 columns, 3 rows */}
-          <View style={styles.grid}>
+          {/* Grid - 3 columns, 2 rows */}
+          <View style={styles.gridContainer}>
             {conversationTypes.map((type, index) => (
-              <View key={type.id} style={styles.cardColumn}>
+              <View key={type.id} style={styles.gridItem}>
                 <TouchableOpacity
                   onPress={() => onSelect(type)}
                   activeOpacity={0.8}
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   content: {
     padding: 20,
     paddingTop: 50,
-    maxWidth: 1000,
+    maxWidth: 1200,
     alignSelf: 'center',
     width: '100%',
   },
@@ -210,23 +210,30 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     lineHeight: 22,
   },
-  grid: {
+  gridContainer: {
+    display: 'flex',
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: 20,
   },
-  cardColumn: {
-    width: '48%', // This ensures exactly 2 columns with proper spacing
-    marginBottom: 20,
+  gridItem: {
+    width: '31%', // 3 columns with spacing: (100% - 2*gap) / 3
+    minWidth: 280, // Minimum width for smaller screens
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '31%',
   },
   cardWrapper: {
     width: '100%',
+    height: '100%',
   },
   card: {
     backgroundColor: '#1e293b',
     borderColor: '#334155',
     borderRadius: 16,
     height: 280,
+    width: '100%',
   },
   cardContent: {
     padding: 24,
